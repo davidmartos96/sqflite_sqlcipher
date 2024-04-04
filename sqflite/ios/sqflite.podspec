@@ -25,5 +25,6 @@ Access SQLite database.
     'HEADER_SEARCH_PATHS' => 'SQLCipher',
     'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64'
   }
+  s.resource_bundles = {'sqflite_ios_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
 end
 
