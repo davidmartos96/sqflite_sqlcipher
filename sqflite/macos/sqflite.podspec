@@ -21,4 +21,5 @@ Access SQLite database.
   s.platform = :osx, '10.13'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'HEADER_SEARCH_PATHS' => 'SQLCipher' }
   s.swift_version = '5.0'
+  s.resource_bundles = {'sqflite_ios_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
 end
