@@ -32,6 +32,8 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 31
 
+    namespace 'com.davidmartos96.sqflite_sqlcipher'
+
     defaultConfig {
         minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
