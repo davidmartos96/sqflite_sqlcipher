@@ -4,7 +4,7 @@ import android.util.Log;
 
 
 import java.io.File;
-
+import android.database.sqlite.SQLiteException;
 import static com.davidmartos96.sqflite_sqlcipher.Constant.TAG;
 
 import net.zetetic.database.DatabaseErrorHandler;
@@ -40,13 +40,10 @@ class Database {
     public void openReadOnly() {
         openWithFlags(SQLiteDatabase.OPEN_READONLY, new DatabaseErrorHandler() {
             @Override
-            public void onCorruption(SQLiteDatabase dbObj) {
-                // ignored
-                // default implementation delete the file
-                //
-                // This happens asynchronously so cannot be tracked. However a simple
-                // access should fail
+            public void onCorruption(SQLiteDatabase dbObj, SQLiteException exception) {
+
             }
+
         });
     }
 
