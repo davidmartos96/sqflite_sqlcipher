@@ -1,5 +1,6 @@
 package com.davidmartos96.sqflite_sqlcipher;
 
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 
@@ -40,7 +41,7 @@ class Database {
     public void openReadOnly() {
         openWithFlags(SQLiteDatabase.OPEN_READONLY, new DatabaseErrorHandler() {
             @Override
-            public void onCorruption(SQLiteDatabase dbObj) {
+            public void onCorruption(SQLiteDatabase dbObj, SQLiteException exception) {
                 // ignored
                 // default implementation delete the file
                 //
