@@ -5,7 +5,7 @@
 import FlutterMacOS
 import Foundation
 
-import sqflite_darwin
+import sqflite
 import sqflite_sqlcipher
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
