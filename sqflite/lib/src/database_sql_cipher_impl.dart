@@ -5,8 +5,7 @@ import 'package:sqflite_sqlcipher/src/sql_cipher_open_options.dart';
 /// Sql Cipher database impl.
 class SqfileSqlCipherDatabaseImpl extends SqfliteDatabaseBase {
   /// Sql Cipher database ctor.
-  SqfileSqlCipherDatabaseImpl(SqfliteDatabaseOpenHelper openHelper, String path)
-      : super(openHelper, path);
+  SqfileSqlCipherDatabaseImpl(super.openHelper, super.path);
 
   @override
   Future<T> invokeMethod<T>(String method, [dynamic arguments]) =>

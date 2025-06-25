@@ -28,7 +28,7 @@ dependencies:
   sqflite_common: ^2.5.0
 
 dev_dependencies:
-  lints: ^3.0.0
-  process_run: ^0.13.1
+  lints: ^6.0.0
+  process_run: ^1.2.4
   flutter_test:
     sdk: flutter
