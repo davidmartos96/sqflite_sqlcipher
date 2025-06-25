@@ -1,3 +1,6 @@
+## 3.2.0
+* Update SQLCipher version to [4.9.0](https://www.zetetic.net/blog/2025/05/15/sqlcipher-4.9.0-release-security-update/)
+
 ## 3.1.0
 * Update SQLCipher version to [4.5.7](https://www.zetetic.net/blog/2024/04/24/sqlcipher-4.5.7-release/)
 

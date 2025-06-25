@@ -154,7 +154,7 @@ Future<Database> openReadOnlyDatabase(String path, {String? password}) =>
 ///
 /// Get the default databases location.
 ///
-/// On Android, it is typically data/data/<package_name>/databases
+/// On Android, it is typically `data/data/<package_name>/databases`
 ///
 /// On iOS, it is the Documents directory
 ///
