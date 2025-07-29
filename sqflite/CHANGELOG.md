@@ -1,3 +1,6 @@
+## 3.2.1
+* Update minimum version to Flutter 3.27 to support Android SDK 35.
+
 ## 3.2.0
 * Update SQLCipher version to [4.9.0](https://www.zetetic.net/blog/2025/05/15/sqlcipher-4.9.0-release-security-update/)
 
