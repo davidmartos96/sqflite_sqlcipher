@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation 'net.zetetic:sqlcipher-android:4.9.0@aar'
+    implementation 'net.zetetic:sqlcipher-android:4.10.0@aar'
 
     // We need to use a version compatible with sqlcipher. See here:
     // https://github.com/sqlcipher/sqlcipher-android/blob/c5bd0cf2a2d26cd977d6127180f594750675093e/build.gradle#L34
