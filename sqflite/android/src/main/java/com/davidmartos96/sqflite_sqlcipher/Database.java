@@ -1,11 +1,11 @@
 package com.davidmartos96.sqflite_sqlcipher;
 
 import android.database.sqlite.SQLiteException;
+import android.os.Build;
 import android.util.Log;
 
 
 import java.io.File;
-import android.database.sqlite.SQLiteException;
 import static com.davidmartos96.sqflite_sqlcipher.Constant.TAG;
 
 import net.zetetic.database.DatabaseErrorHandler;
@@ -109,7 +109,7 @@ class Database {
     String getThreadLogTag() {
         Thread thread = Thread.currentThread();
 
-        return "" + id + "," + thread.getName() + "(" + thread.getId() + ")";
+        return id + "," + thread.getName() + "(" + getThreadId(thread)+ ")";
     }
 
     String getThreadLogPrefix() {
@@ -124,5 +124,22 @@ class Database {
         new File(file.getPath() + "-journal").delete();
         new File(file.getPath() + "-shm").delete();
         new File(file.getPath() + "-wal").delete();
+    }
+
+    public static long getThreadId(Thread thread) {
+        // SDK 36 is the minimum supported version
+        // Build.VERSION_CODES.BAKLAVA is Android 36
+        // for when Thread.threadId() is definitely available and getId() is deprecated.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) { // Android 16 (API 36) and above
+            // Use the new, recommended method
+            return thread.threadId();
+        } else {
+            // For older Android versions where threadId() might not be available
+            // and getId() is still the primary way to get a thread ID.
+            // Suppress the deprecation warning for this specific line.
+            @SuppressWarnings("deprecation")
+            long id = thread.getId();
+            return id;
+        }
     }
 }

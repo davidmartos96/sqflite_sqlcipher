@@ -2,11 +2,11 @@ name: sqflite_sqlcipher
 homepage: https://github.com/davidmartos96/sqflite_sqlcipher
 description: Flutter plugin for SQLite, a self-contained, high-reliability,
   embedded, SQL database engine. (SqlCipher support)
-version: 3.3.0
+version: 3.4.0
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
-  flutter: ">=3.27.0"
+  flutter: ">=3.29.0"
 
 flutter:
   plugin:
