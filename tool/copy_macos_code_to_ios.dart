@@ -7,7 +7,7 @@ Future<void> main() async {
 # Code is shared between ios and macos
 # There is no easy way to do that so the macos code is the reference
 # and is copied to ios
-cp -R sqflite/macos/Classes/ sqflite/ios/Classes/
+cp -R sqflite_sqlcipher/macos/sqflite_sqlcipher/Sources/ sqflite_sqlcipher/ios/sqflite_sqlcipher/Sources/
 
 ''');
 }
