@@ -1,0 +1,33 @@
+name: app_v340
+description: "Cross-version test app pinned to the PUBLISHED pub.dev release (CocoaPods SQLCipher backend)."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Published pub.dev release. On iOS/macOS this resolves the CocoaPods
+  # `SQLCipher` / `FMDB/SQLCipher` pods (no Package.swift exists in 3.4.0).
+  sqflite_sqlcipher: 3.4.0
+
+  path: any
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  # iOS cross-version test: the db to verify is injected here before the build
+  # and loaded from rootBundle at runtime (the sandbox can't be written to
+  # externally). Placeholder content until the orchestrator overwrites it.
+  assets:
+    - assets/incoming.db
