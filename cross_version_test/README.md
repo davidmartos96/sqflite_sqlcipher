@@ -9,12 +9,13 @@ SQLCipher), and **vice versa**, using the same key.
 
 | Version | Source | iOS/macOS SQLCipher backend |
 |---|---|---|
-| `3.4.0` | pub.dev (`app_v340`) | CocoaPods `SQLCipher` / `FMDB/SQLCipher` pods |
-| `4.0.0` | local path (`app_v400`) | Swift Package Manager → SQLCipher 4.10.0 amalgamation compiled as a static C target + vendored FMDB |
+| `3.4.0` | pub.dev (`app_v340`) | CocoaPods `SQLCipher` 4.10.0 / `FMDB/SQLCipher` pods |
+| `4.0.0` | local path (`app_v400`) | Swift Package Manager → SQLCipher 4.16.0 amalgamation compiled as a static C target + vendored FMDB |
 
-Both build the **same SQLCipher 4.10.0 amalgamation with the CommonCrypto backend
-and identical compile flags** (the SPM target mirrors the CocoaPods pod's flags),
-so on-disk databases are byte-compatible. This harness proves it end to end.
+The two builds use **different SQLCipher 4.x releases** — the CocoaPods pod tops out at
+4.10.0, while the source-built SPM target tracks the latest (4.16.0). SQLCipher keeps a
+stable on-disk format across 4.x with the CommonCrypto backend, so their databases stay
+byte-compatible. This harness proves that end to end, in both directions.
 
 ## Layout
 

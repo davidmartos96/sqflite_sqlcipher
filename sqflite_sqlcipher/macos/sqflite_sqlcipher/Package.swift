@@ -39,15 +39,16 @@ let package = Package(
                 .define("SQLITE_HAS_CODEC")
             ]
         ),
-        // SQLCipher built from the vendored amalgamation (4.10.0) as a static C target.
+        // SQLCipher built from the vendored amalgamation (4.16.0) as a static C target.
         // Static linkage makes the sqlite3_* symbols *defined* in the final app binary,
         // so they can never be shadowed by the system /usr/lib/libsqlite3.dylib — the
         // exact property the old CocoaPods static-pod path relied on, and which the
         // prebuilt SQLCipher.swift *dynamic* xcframework could not guarantee.
         //
-        // The build flags mirror the CocoaPods `SQLCipher` 4.10.0 podspec verbatim so the
-        // on-disk database format and CommonCrypto crypto backend stay byte-compatible
-        // across the SPM and CocoaPods builds (see cross_version_test/).
+        // The build flags mirror the CocoaPods `SQLCipher` pod's flags verbatim, and
+        // SQLCipher keeps a stable on-disk format across 4.x with the CommonCrypto backend.
+        // So databases written by this SPM build (4.16.0) interchange with the CocoaPods
+        // build (whose pod tops out at 4.10.0) and vice versa — see cross_version_test/.
         .target(
             name: "SQLCipher",
             exclude: [

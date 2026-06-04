@@ -1,11 +1,12 @@
 ## 4.0.0
-* Add Swift Package Manager support for iOS and macOS. SQLCipher (4.10.0) is compiled
-  from the vendored amalgamation as a **static** C target with the CommonCrypto backend
-  (the same build flags as the CocoaPods `SQLCipher` pod), and FMDB is vendored. Static
-  linkage keeps the `sqlite3_*` symbols defined in the app binary so they cannot be
-  shadowed by the system `libsqlite3` — the property the CocoaPods static-pod path
-  relied on, which a prebuilt dynamic SQLCipher framework could not guarantee. CocoaPods
-  remains supported and unchanged.
+* Add Swift Package Manager support for iOS and macOS. SQLCipher is compiled from the
+  vendored amalgamation as a **static** C target (CommonCrypto backend, the same build
+  flags as the CocoaPods `SQLCipher` pod), and FMDB is vendored. Static linkage keeps the
+  `sqlite3_*` symbols defined in the app binary so they cannot be shadowed by the system
+  `libsqlite3` — the property the CocoaPods static-pod path relied on, which a prebuilt
+  dynamic SQLCipher framework could not guarantee. The SPM build ships SQLCipher 4.16.0
+  while CocoaPods stays on the `SQLCipher` 4.10.0 pod (its latest); both use the stable
+  4.x on-disk format, so their databases interchange. CocoaPods remains supported.
 * Update minimum version to Flutter 3.44 (required for the Swift Package Manager
   `FlutterFramework` dependency).
 * Raise the iOS deployment target to 12.0.
