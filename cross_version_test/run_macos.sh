@@ -3,8 +3,8 @@
 # Cross-version SQLCipher compatibility test on macOS.
 #
 #   Phase 1  app_v340 (pub.dev 3.4.0 -> CocoaPods SQLCipher)  CREATES  db_a
-#   Phase 2  app_v400 (local 4.0.0  -> SPM SQLCipher.swift)   VERIFIES db_a   (pod  -> spm)
-#   Phase 3  app_v400 (local 4.0.0  -> SPM SQLCipher.swift)   CREATES  db_b
+#   Phase 2  app_v400 (local 4.0.0  -> SPM static SQLCipher)   VERIFIES db_a   (pod  -> spm)
+#   Phase 3  app_v400 (local 4.0.0  -> SPM static SQLCipher)   CREATES  db_b
 #   Phase 4  app_v340 (pub.dev 3.4.0 -> CocoaPods SQLCipher)  VERIFIES db_b   (spm -> pod)
 #
 # Both apps run the SAME integration test (integration_test/cross_version_test.dart);
@@ -38,22 +38,32 @@ run_phase() {
 }
 
 assert_spm_v400() {
-  bold ">>> Confirming app_v400 actually resolved SQLCipher.swift via SPM"
-  local hits
-  hits="$(grep -rl "SQLCipher.swift" "$HERE/app_v400/macos" 2>/dev/null || true)"
-  if [[ -z "$hits" ]]; then
-    red "    FAIL: no SPM artifacts referencing SQLCipher.swift were found."
-    red "    app_v400 did not build through Swift Package Manager."
+  bold ">>> Confirming app_v400 built SQLCipher from source as a STATIC SPM target"
+  # 1) The prebuilt *dynamic* SQLCipher framework must be absent. Its presence would mean
+  #    sqlite3_* lives in a dylib and could be shadowed by the system libsqlite3 at runtime.
+  local dyn
+  dyn="$(find "$HERE/app_v400/build/macos" \( -name 'SQLCipher.xcframework' -o -name 'SQLCipher.framework' \) 2>/dev/null | head -1 || true)"
+  if [[ -n "$dyn" ]]; then
+    red "    FAIL: a prebuilt dynamic SQLCipher framework is present: $dyn"
+    red "    Expected the source-built static SQLCipher C target instead."
     exit 1
   fi
-  green "    OK: SPM resolved SQLCipher.swift"
-  echo "$hits" | sed 's/^/      /'
+  # 2) The vendored SQLCipher amalgamation must have been compiled from source by SPM.
+  local obj
+  obj="$(find "$HERE/app_v400/build/macos" -path '*SQLCipher*' -name 'sqlite3.o' 2>/dev/null | head -1 || true)"
+  if [[ -z "$obj" ]]; then
+    red "    FAIL: no compiled SQLCipher amalgamation (sqlite3.o) found."
+    red "    app_v400 did not build the static SQLCipher SPM target."
+    exit 1
+  fi
+  green "    OK: SQLCipher compiled from source as a static SPM target"
+  echo "      ${obj#$HERE/}"
   echo
 }
 
 bold "=================================================================="
 bold " Cross-version SQLCipher test (macOS)"
-bold " v3.4.0 = CocoaPods SQLCipher   |   v4.0.0 = SPM SQLCipher.swift"
+bold " v3.4.0 = CocoaPods SQLCipher   |   v4.0.0 = SPM static SQLCipher"
 bold "=================================================================="
 echo "Shared DB directory: $DBDIR"
 rm -rf "$DBDIR"
@@ -72,10 +82,10 @@ run_phase app_v400 verify db_a.db "v3.4.0 (CocoaPods pod)" \
 
 assert_spm_v400
 
-run_phase app_v400 create db_b.db "v4.0.0 (SPM SQLCipher.swift)" \
+run_phase app_v400 create db_b.db "v4.0.0 (SPM static SQLCipher)" \
   "Phase 3/4: v4.0.0 (SPM) CREATES db_b"
 
-run_phase app_v340 verify db_b.db "v4.0.0 (SPM SQLCipher.swift)" \
+run_phase app_v340 verify db_b.db "v4.0.0 (SPM static SQLCipher)" \
   "Phase 4/4: v3.4.0 (pod) READS+VERIFIES db_b  [spm -> pod]"
 
 bold "=================================================================="

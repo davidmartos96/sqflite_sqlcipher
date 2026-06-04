@@ -1,7 +1,8 @@
 #import "SqfliteSqlCipherPlugin.h"
 
 // Imports differ between SPM and CocoaPods, and between iOS and macOS.
-// Under SPM, FMDB is vendored and SQLCipher comes from the SQLCipher.swift package.
+// Under SPM, FMDB is vendored and SQLCipher is the source-built static C target
+// (the vendored amalgamation), whose module exposes <SQLCipher/SQLCipher.h>.
 #if SWIFT_PACKAGE
 #import <SQLCipher/SQLCipher.h>
 #import "FMDB.h"
@@ -620,7 +621,7 @@ static NSInteger _databaseOpenCount = 0;
         @synchronized (self.mapLock) {
             SqfliteSqlCipherDatabase* database = self.singleInstanceDatabaseMap[path];
             if (database != nil) {
-                // Check if opened
+                // Check if openedŸ
                 if (_log) {
                     NSLog(@"re-opened %@singleInstance %@ id %@", database.inTransaction ? @"(in transaction) ": @"", path, database.databaseId);
                 }
@@ -639,7 +640,7 @@ static NSInteger _databaseOpenCount = 0;
                 NSLog(@"Creating parent dir %@", parentDir);
             }
             [[NSFileManager defaultManager] createDirectoryAtPath:parentDir withIntermediateDirectories:YES attributes:nil error:&error];
-            // Ignore the error, it will break later during open
+            // Ingore the error, it will break later during open
         }
     }
     FMDatabaseQueue *queue = [FMDatabaseQueue databaseQueueWithPath:path flags:(readOnly ? SQLITE_OPEN_READONLY : (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE))];
@@ -656,7 +657,7 @@ static NSInteger _databaseOpenCount = 0;
     [queue inDatabase:^(FMDatabase *database) {
         if (password == nil) {
             [database setKey:@""];
-        } else {
+        } else {
             [database setKey:password];
         }
         

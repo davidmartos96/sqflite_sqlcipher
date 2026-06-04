@@ -5,6 +5,9 @@
 .packages
 .pub/
 build/
+# Swift Package Manager build/index artifacts (the vendored SQLCipher SPM target
+# and SourceKit indexing create these inside the in-repo packages).
+.build/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 

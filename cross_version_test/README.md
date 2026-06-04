@@ -2,19 +2,19 @@
 
 Verifies that an encrypted SQLCipher database created by the **published
 `sqflite_sqlcipher` 3.4.0** (CocoaPods `SQLCipher` pod) can be opened and read
-by the **local 4.0.0** build (Swift Package Manager `SQLCipher.swift`), and
-**vice versa**, using the same key — exercising both Apple backends that 4.0.0
-introduced SPM support for.
+by the **local 4.0.0** build (Swift Package Manager, source-built static
+SQLCipher), and **vice versa**, using the same key.
 
 ## Why this matters
 
 | Version | Source | iOS/macOS SQLCipher backend |
 |---|---|---|
 | `3.4.0` | pub.dev (`app_v340`) | CocoaPods `SQLCipher` / `FMDB/SQLCipher` pods |
-| `4.0.0` | local path (`app_v400`) | Swift Package Manager → `SQLCipher.swift` xcframework + vendored FMDB |
+| `4.0.0` | local path (`app_v400`) | Swift Package Manager → SQLCipher 4.10.0 amalgamation compiled as a static C target + vendored FMDB |
 
-Both ship SQLCipher 4.10.0 with the CommonCrypto backend, so on-disk databases
-should be byte-compatible. This harness proves it end to end.
+Both build the **same SQLCipher 4.10.0 amalgamation with the CommonCrypto backend
+and identical compile flags** (the SPM target mirrors the CocoaPods pod's flags),
+so on-disk databases are byte-compatible. This harness proves it end to end.
 
 ## Layout
 
@@ -52,8 +52,9 @@ the exact dataset, that the **wrong key is rejected**, and that the file is
 3. v4.0.0 (SPM) **creates** `db_b`
 4. v3.4.0 (pod) **reads + verifies** `db_b`   — spm → pod
 
-The macOS run also asserts that `app_v400` genuinely resolved
-`SQLCipher.swift` through SPM (not the fallback podspec).
+Both runs also assert that `app_v400` genuinely built SQLCipher from source as a
+**static** SPM C target — i.e. the vendored amalgamation was compiled (`sqlite3.o`
+present) and no prebuilt dynamic `SQLCipher.framework`/`.xcframework` was pulled in.
 
 ## Running
 

@@ -76,23 +76,36 @@ run_verify_asset() {
 }
 
 assert_spm_v400() {
-  bold ">>> Confirming app_v400 actually resolved SQLCipher.swift via SPM (iOS)"
-  local hits
-  hits="$(grep -rl "SQLCipher.swift" "$HERE/app_v400/ios" 2>/dev/null || true)"
-  [[ -n "$hits" ]] || { red "    FAIL: no SPM artifacts referencing SQLCipher.swift in app_v400/ios."; exit 1; }
-  green "    OK: SPM resolved SQLCipher.swift"; echo "$hits" | sed 's/^/      /'; echo
+  bold ">>> Confirming app_v400 built SQLCipher from source as a STATIC SPM target (iOS)"
+  # `flutter test` builds the iOS app into Xcode DerivedData rather than app_v400/build/ios,
+  # so search both. The source-built static SQLCipher target compiles under an SPM
+  # '.../sqflite_sqlcipher.build/.../SQLCipher.build/' path — whereas the CocoaPods build
+  # (app_v340) would use '.../Pods.build/SQLCipher.build/' and the old prebuilt dynamic
+  # xcframework would not compile sqlite3.o at all. So a compiled amalgamation object under
+  # the SPM path is a definitive positive signal.
+  local obj
+  obj="$(find "$HERE/app_v400/build" "$HOME/Library/Developer/Xcode/DerivedData" \
+            -path '*sqflite_sqlcipher.build*iphone*SQLCipher.build*' -name 'sqlite3.o' 2>/dev/null | head -1 || true)"
+  [[ -n "$obj" ]] || { red "    FAIL: no source-built SQLCipher amalgamation (sqlite3.o) under an SPM 'sqflite_sqlcipher.build/...iphone...' path — static SPM target missing."; exit 1; }
+  # ...and that object must statically define the codec entry point (SQLCipher compiled in).
+  # NB: capture nm into a var first — piping `nm | grep -q` would let grep close the pipe on
+  # first match, killing nm with SIGPIPE, which `set -o pipefail` turns into a false failure.
+  local syms; syms="$(nm "$obj" 2>/dev/null || true)"
+  grep -qE " T _sqlite3_key$" <<<"$syms" \
+    || { red "    FAIL: $obj does not define sqlite3_key — SQLCipher codec not compiled in."; exit 1; }
+  green "    OK: SQLCipher compiled from source as a static SPM target (sqlite3_key defined)"; echo "      ${obj/#$HOME/~}"; echo
 }
 
 bold "=================================================================="
 bold " Cross-version SQLCipher test (iOS Simulator)  UDID=$UDID"
-bold " v3.4.0 = CocoaPods SQLCipher   |   v4.0.0 = SPM SQLCipher.swift"
+bold " v3.4.0 = CocoaPods SQLCipher   |   v4.0.0 = SPM static SQLCipher"
 bold "=================================================================="
 
 bold ">>> Phase 1/4: v3.4.0 (pod) CREATES + exports db_a"
 run_create_export app_v340 db_a.db 'v3.4.0 (CocoaPods pod)' "$WORK/db_a.db"; echo
 
 bold ">>> Phase 2/4: v4.0.0 (SPM) CREATES + exports db_b"
-run_create_export app_v400 db_b.db 'v4.0.0 (SPM SQLCipher.swift)' "$WORK/db_b.db"; echo
+run_create_export app_v400 db_b.db 'v4.0.0 (SPM static SQLCipher)' "$WORK/db_b.db"; echo
 
 assert_spm_v400
 

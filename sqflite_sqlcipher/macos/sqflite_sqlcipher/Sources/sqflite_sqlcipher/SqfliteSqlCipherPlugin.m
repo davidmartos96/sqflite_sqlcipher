@@ -1,7 +1,8 @@
 #import "SqfliteSqlCipherPlugin.h"
 
 // Imports differ between SPM and CocoaPods, and between iOS and macOS.
-// Under SPM, FMDB is vendored and SQLCipher comes from the SQLCipher.swift package.
+// Under SPM, FMDB is vendored and SQLCipher is the source-built static C target
+// (the vendored amalgamation), whose module exposes <SQLCipher/SQLCipher.h>.
 #if SWIFT_PACKAGE
 #import <SQLCipher/SQLCipher.h>
 #import "FMDB.h"
