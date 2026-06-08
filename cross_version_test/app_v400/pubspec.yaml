@@ -1,0 +1,34 @@
+name: app_v400
+description: "Cross-version test app pinned to the LOCAL 4.0.0 branch (Swift Package Manager SQLCipher.swift backend)."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Local 4.0.0 under test. With Swift Package Manager enabled, iOS/macOS
+  # resolve this plugin through its Package.swift -> SQLCipher.swift package.
+  sqflite_sqlcipher:
+    path: ../../sqflite_sqlcipher
+
+  path: any
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  # iOS cross-version test: the db to verify is injected here before the build
+  # and loaded from rootBundle at runtime (the sandbox can't be written to
+  # externally). Placeholder content until the orchestrator overwrites it.
+  assets:
+    - assets/incoming.db

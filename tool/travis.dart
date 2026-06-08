@@ -6,8 +6,8 @@ Future main() async {
   await shell.run('flutter doctor');
 
   for (var dir in [
-    'sqflite/example',
-    'sqflite',
+    'sqflite_sqlcipher/example',
+    'sqflite_sqlcipher',
   ]) {
     shell = shell.pushd(dir);
     await shell.run('''
